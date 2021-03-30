@@ -1,12 +1,9 @@
 <?php
-        
-    declare(strict_types=1);
-
     use Firebase\JWT\JWT;
 
     require_once('../../thirdparty/JWT.php');
 
-    class Token
+    class Authenticate
     {
         private $secretKey  = 'bGS6lzFqvvSQ8ALbOxatm7/Vk7mLQyzqaS34Q4oR1ew=';
         private $decodeKey = 'HS512';
@@ -92,6 +89,5 @@
             }
             return true;
         }
-        
     }
 ?>
