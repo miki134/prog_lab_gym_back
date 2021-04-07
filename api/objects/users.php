@@ -24,32 +24,39 @@ class Users extends Obj {
         return $stmt;
     }
 
-    public function readOne(){
-        $sql = "SELECT `name`, `surname`, `email`, `password`, `role` FROM `users` WHERE `id` = ".$this->id;
-    
+    public function getUser(){
+        $sql = "SELECT `name`, `surname`, `email`, `password`, `role` FROM "
+        .$this->table_name.
+        " WHERE `email` LIKE '".$this->email."'";
+
         $stmt = $this->conn->prepare( $sql );
     
         $stmt->bindParam(1, $this->id);
     
         $stmt->execute();
-    
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-        $this->name = $row['name'];
-        $this->surname = $row['surname'];
-        $this->email = $row['email'];
-        $this->password = $row['password'];
-        $this->role = $row['role'];
+
+        if($stmt->rowCount() >= 1){
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $this->name = $row['name'];
+            $this->surname = $row['surname'];
+            $this->email = $row['email'];
+            $this->password = $row['password'];
+            $this->role = $row['role'];
+            return true;
+        }
+        return false; 
     }
 
     public function create(){
-        $query = "INSERT INTO
-                " . $this->table_name . "
-            SET
-                name=:name, surname=:surname, email=:email, password=:password, role=:role ";
+
+        $query = "INSERT INTO " 
+            .$this->table_name.
+            " SET
+                name=:name, surname=:surname, email=:email, password=:password, role=:role";
     
         $stmt = $this->conn->prepare($query);
-    
+        
         $this->name=htmlspecialchars(strip_tags($this->name));
         $this->surname=htmlspecialchars(strip_tags($this->surname));
         $this->email=htmlspecialchars(strip_tags($this->email));
@@ -63,6 +70,18 @@ class Users extends Obj {
         $stmt->bindParam(":role", $this->role);
     
         if($stmt->execute()){
+            return true;
+        }
+        return false; 
+    }
+
+    public function ifExists(){
+        $sql = "SELECT * FROM " .$this->table_name. " WHERE `email` LIKE '".$this->email."'";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute();
+        
+        if($stmt->rowCount() >= 1){
             return true;
         }
         return false; 

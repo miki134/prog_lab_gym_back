@@ -8,6 +8,8 @@
     
     include_once '../config/database.php';
     include_once '../objects/users.php';
+    include_once '../config/authenticate.php';
+
     
     $database = new Database();
     $db = $database->getConnection();
@@ -29,11 +31,14 @@
         $users->password = md5($data->password);
         $users->role = 'client';
 
-        if($users->create()){
+        if($users->create()){            
+            
+            $token = new Authenticate($users->name);
             
             http_response_code(201);
+            echo json_encode(array("token" => $token->getToken()));
             
-            echo json_encode(array("message" => "User was created."));
+            // echo json_encode(array("message" => "User was created."));
         }
         else{
             echo json_encode(array("message" => "Unable to add user."));
