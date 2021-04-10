@@ -1,15 +1,14 @@
 <?php
 require_once 'object.php';
-class Equipment extends Obj
+class Workouts extends Obj
 {
-    protected $table_name = "equipment";
+    protected $table_name = "workouts";
 
     public $id;
     public $name;
-    public $length;
-    public $height;
-    public $width;
-    public $weight;
+    public $lengthOfTime;
+    public $quantityOfExercises;
+    public $difficulty;
     public $description;
 
     public function __construct($db)
@@ -17,9 +16,9 @@ class Equipment extends Obj
         $this->conn = $db;
     }
 
-    public function getEquipment()
+    public function getWorkouts()
     {
-        $sql = "SELECT `name`, `length`, `height`, `width`, `weight` ,`description` FROM "
+        $sql = "SELECT `name`, `lengthOfTime`, `quantityOfExercises`, `difficulty`, `description` FROM "
             . $this->table_name;
 
         $stmt = $this->conn->prepare($sql);
@@ -34,10 +33,9 @@ class Equipment extends Obj
 
                 $rowArr = array(
                     $row['name'],
-                    $row['length'],
-                    $row['height'],
-                    $row['width'],
-                    $row['weight'],
+                    $row['lengthOfTime'],
+                    $row['quantityOfExercises'],
+                    $row['difficulty'],
                     $row['description']
                 );
                 array_push($arr, $rowArr);
@@ -54,22 +52,20 @@ class Equipment extends Obj
         $query = "INSERT INTO "
             . $this->table_name .
             " SET
-                name=:name, length=:length, height=:height, width=:width, weight=:weight, description=:description";
+                name=:name, lengthOfTime=:lengthOfTime, quantityOfExercises=:quantityOfExercises, difficulty=:difficulty, weight=:weight, description=:description";
 
         $stmt = $this->conn->prepare($query);
 
         $this->name = htmlspecialchars(strip_tags($this->name));
-        $this->length = htmlspecialchars(strip_tags($this->length));
-        $this->height = htmlspecialchars(strip_tags($this->height));
-        $this->width = htmlspecialchars(strip_tags($this->width));
-        $this->weight = htmlspecialchars(strip_tags($this->weight));
+        $this->lengthOfTime = htmlspecialchars(strip_tags($this->lengthOfTime));
+        $this->quantityOfExercises = htmlspecialchars(strip_tags($this->quantityOfExercises));
+        $this->difficulty = htmlspecialchars(strip_tags($this->difficulty));
         $this->description = htmlspecialchars(strip_tags($this->description));
 
         $stmt->bindParam(":name", $this->name);
-        $stmt->bindParam(":length", $this->length);
-        $stmt->bindParam(":height", $this->height);
-        $stmt->bindParam(":width", $this->width);
-        $stmt->bindParam(":weight", $this->weight);
+        $stmt->bindParam(":lengthOfTime", $this->lengthOfTime);
+        $stmt->bindParam(":quantityOfExercises", $this->quantityOfExercises);
+        $stmt->bindParam(":difficulty", $this->difficulty);
         $stmt->bindParam(":description", $this->description);
 
         if ($stmt->execute()) {
@@ -84,10 +80,9 @@ class Equipment extends Obj
         $sql = "CREATE TABLE IF NOT EXISTS  " . $this->table_name . " ( \n"
             . "    id int AUTO_INCREMENT, \n"
             . "    name varchar(30) not null, \n"
-            . "    length varchar(10) not null, \n"
-            . "    height varchar(10) not null, \n"
-            . "    width varchar(10) not null, \n"
-            . "    weight varchar(10) not null, \n"
+            . "    lengthOfTime varchar(10) not null, \n"
+            . "    quantityOfExercises int not null, \n"
+            . "    difficulty int(1) not null, \n"
             . "    description varchar(300) DEFAULT 'Brak', \n"
             . "    PRIMARY Key(id)\n"
             . ")";

@@ -83,7 +83,7 @@ class Trainers extends Obj
             . "    surname varchar(30) not null, \n"
             . "    birthday date not null, \n"
             . "    phone varchar(11) not null, \n"
-            . "    description varchar(300) null, \n"
+            . "    description varchar(300) DEFAULT 'Brak', \n"
             . "    PRIMARY Key(id)\n"
             . ")";
 
