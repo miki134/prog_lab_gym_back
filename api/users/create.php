@@ -15,7 +15,7 @@
     $db = $database->getConnection();
     
     $users = new Users($db);
-    $users->createTable();
+    // $users->createTable();
     $data = json_decode(file_get_contents("php://input"));
     
     
@@ -28,24 +28,34 @@
         $users->name = $data->name;
         $users->surname = $data->surname;
         $users->email = $data->email;
-        $users->password = md5($data->password);
+        $users->password = $data->password;
         $users->role = 'client';
-
-        if($users->create()){            
-            
-            $token = new Authenticate($users->name);
-            
-            http_response_code(201);
-            echo json_encode(array("token" => $token->getToken()));
-            
-            // echo json_encode(array("message" => "User was created."));
+        
+        $mess = '';
+        if($users->checkCredentials($mess))
+        {
+            $users->password = md5($users->password);
+            if($users->create()){            
+                
+                $token = new Authenticate($users->email);
+                
+                http_response_code(201);
+                echo json_encode(array("token" => $token->getToken()));
+                
+                // echo json_encode(array("message" => "User was created."));
+            }
+            else{
+                echo json_encode(array("error" => "Przepraszamy rejestracja w tej chwili jest nie mozliwa. Prosze spróbowac pozniej"));
+            }
         }
-        else{
-            echo json_encode(array("message" => "Unable to add user."));
+        else
+        {
+            http_response_code(400);
+            echo json_encode(array("error" => $mess));
         }
     }
     else{
         http_response_code(400);
-        echo json_encode(array("message" => "Unable to add user. Data is incomplete."));
+        echo json_encode(array("error" => "Niekompletne dane"));
     }
 ?>

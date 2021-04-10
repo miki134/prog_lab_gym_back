@@ -27,11 +27,10 @@ $auth = new Authenticate('');
 if ($auth->checkToken($token, $message)) {
     $user = new Users($db);
     $user->email = $token->data;
-    // echo $token->data;
 
     if ($user->ifExists())
     {
-        echo json_encode(array("data" =>  $user->getUser()));
+        echo json_encode(array("data" =>  $user->getUsers()));
     }
     else
     {

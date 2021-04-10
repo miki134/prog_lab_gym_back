@@ -11,7 +11,7 @@
             $stmt = $this->conn->query($sql);     
 
             $stmt->execute();
-
+            $stmt->closeCursor();
             return $stmt;
         }
     }
