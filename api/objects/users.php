@@ -125,7 +125,7 @@ class Users extends Obj
 
     public function createTable()
     {
-        $sql = "CREATE TABLE IF NOT EXISTS  `users`( \n"
+        $sql = "CREATE TABLE IF NOT EXISTS  ".$this->table_name." ( \n"
             . "    id int AUTO_INCREMENT, \n"
             . "    name varchar(30) not null, \n"
             . "    surname varchar(30) not null, \n"
