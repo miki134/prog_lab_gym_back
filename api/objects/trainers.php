@@ -90,4 +90,47 @@ class Trainers extends Obj
         $stmt = $this->conn->exec($sql);
         return $stmt;
     }
+
+    public function checkCredentials(&$message)
+    {
+        //name
+        if (!preg_match('/^([a-z|A-Z]{4,30})$/', $this->name)) {
+            $message = "Imie musi mieć długość od 4 do 30 znaków, możesz używać tylko liter!";
+            return false;
+        }
+
+        //surname
+        if (!preg_match('/^([a-z|A-Z]{4,30})$/', $this->surname)) {
+            $message = "Nazwisko musi mieć długość od 4 do 30 znaków, możesz używać tylko liter!";
+            return false;
+        }
+
+        //birthday
+        if (!preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2})$/', $this->birthday)) {
+            $message = "Data urodzenia musi być w formacie rrrr-mm-dd!";
+            return false;
+        }
+
+        $now  = date("Y-m-d", time());
+        $then = date( "Y-m-d", strtotime( "$now -110 years" ) );
+
+        if (strtotime($this->birthday) > strtotime($now) || strtotime($this->birthday) < strtotime($then) ) {
+            $message = "Data urodzenia musi być z przedzialu: od $then do $now!";
+            return false;
+        }
+
+        //phone
+        if (!preg_match('/^([0-9]{7,11})$/', $this->phone)) {
+            $message = "Telefon musi musi mieć długość od 7 do 11 znaków i skladac sie z liczb calkowitch z przedzialu od 0 do 9!";
+            return false;
+        }
+
+        //description
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{0,300})$/', $this->description)) {
+            $message = "Opis musi mieć długość od 0 do 300 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        return true;
+    }
 }

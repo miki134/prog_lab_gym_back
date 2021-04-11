@@ -1,61 +1,62 @@
 <?php
-    header("Access-Control-Allow-Origin: *");
-    header("Content-Type: application/json; charset=UTF-8");
-    header("Access-Control-Allow-Methods: POST");
-    header("Access-Control-Max-Age: 3600");
-    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    
-    
-    include_once '../config/database.php';
-    include_once '../objects/users.php';
-    include_once '../config/authenticate.php';
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-    
-    $database = new Database();
-    $db = $database->getConnection();
-    
-    $users = new Users($db);
-    // $users->createTable();
-    $data = json_decode(file_get_contents("php://input"));
-    
-    
-    if( !empty($data->name) &&
-        !empty($data->surname) && 
-        !empty($data->email) && 
-        !empty($data->password))
-    {
-        
-        $users->name = $data->name;
-        $users->surname = $data->surname;
-        $users->email = $data->email;
-        $users->password = $data->password;
-        $users->role = 'client';
-        
+
+include_once '../config/database.php';
+include_once '../objects/trainers.php';
+include_once '../config/authenticate.php';
+
+
+$database = new Database();
+$db = $database->getConnection();
+
+$tab = new Trainers($db);
+$data = json_decode(file_get_contents("php://input"));
+
+$arr = array();
+foreach (getallheaders() as $name => $value) {
+    $arr[$name] = $value;
+}
+
+$token = $arr['Authorization'];
+
+$auth = new Authenticate('');
+if ($auth->checkToken($token, $message)) {
+
+
+    if (
+        !empty($data->name) &&
+        !empty($data->surname) &&
+        !empty($data->birthday) &&
+        !empty($data->phone)
+    ) {
+
+        $tab->name = $data->name;
+        $tab->surname = $data->surname;
+        $tab->birthday = $data->birthday;
+        $tab->phone = $data->phone;
+        $tab->description = $data->description;
+
         $mess = '';
-        if($users->checkCredentials($mess))
-        {
-            $users->password = md5($users->password);
-            if($users->create()){            
-                
-                $token = new Authenticate($users->email);
-                
+        if ($tab->checkCredentials($mess)) {
+            if ($tab->create()) {
                 http_response_code(201);
-                echo json_encode(array("token" => $token->getToken()));
-                
-                // echo json_encode(array("message" => "User was created."));
+                echo json_encode(array("data" => 'Dodano trenera'));
+            } else {
+                echo json_encode(array("error" => "Przepraszamy dodawanie trenerow jest niedostepne!. Prosze spróbowac pozniej"));
             }
-            else{
-                echo json_encode(array("error" => "Przepraszamy rejestracja w tej chwili jest nie mozliwa. Prosze spróbowac pozniej"));
-            }
-        }
-        else
-        {
+        } else {
             http_response_code(400);
             echo json_encode(array("error" => $mess));
         }
-    }
-    else{
+    } else {
         http_response_code(400);
         echo json_encode(array("error" => "Niekompletne dane"));
     }
-?>
+} else {
+    echo json_encode(array("error" => $message));
+}
