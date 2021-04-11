@@ -21,7 +21,6 @@ foreach (getallheaders() as $name => $value) {
 }
 
 $token = $arr['Authorization'];
-// echo json_encode(array("a" => $token));
 
 $auth = new Authenticate('');
 if ($auth->checkToken($token, $message)) {

@@ -52,7 +52,7 @@ class Workouts extends Obj
         $query = "INSERT INTO "
             . $this->table_name .
             " SET
-                name=:name, lengthOfTime=:lengthOfTime, quantityOfExercises=:quantityOfExercises, difficulty=:difficulty, weight=:weight, description=:description";
+                name=:name, lengthOfTime=:lengthOfTime, quantityOfExercises=:quantityOfExercises, difficulty=:difficulty, description=:description";
 
         $stmt = $this->conn->prepare($query);
 
@@ -89,5 +89,37 @@ class Workouts extends Obj
 
         $stmt = $this->conn->exec($sql);
         return $stmt;
+    }
+
+    public function checkCredentials(&$message, $password = true)
+    {
+        //name
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{4,30})$/', $this->name)) {
+            $message = "Nazwa treningu musi mieć długość od 4 do 30 znaków, możesz używać tylko liter!";
+            return false;
+        }
+
+        //lengthOfTime
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{2,10})$/', $this->lengthOfTime)) {
+            $message = "Czas trwania musi mieć długość od 2 do 10 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+        //quantityOfExercises
+        if (!preg_match('/^([0-9]{0,2})$/', $this->quantityOfExercises)) {
+            $message = "Ilosc cwiczen musi byc liczba calkowita z przedzialu od 0 do 100!";
+            return false;
+        }
+        //difficulty
+        if (!preg_match('/^([0-9]{1})$/', $this->difficulty)) {
+            $message = "Poziom trudnosci cwiczen musi byc liczba calkowita z przedzialu od 0 do 9!";
+            return false;
+        }
+        //description
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{0,300})$/', $this->description)) {
+            $message = "Opis musi mieć długość od 0 do 300 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        return true;
     }
 }

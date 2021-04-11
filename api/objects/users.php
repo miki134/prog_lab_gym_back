@@ -131,7 +131,7 @@ class Users extends Obj
             . "    surname varchar(30) not null, \n"
             . "    email varchar(30) unique not null, \n"
             . "    password varchar(32) not null,\n"
-            . "    role ENUM('admin', 'trainer', 'client', 'employee') default 'client', \n"
+            . "    role ENUM('admin', 'client', 'employee') default 'client', \n"
             . "    PRIMARY Key(id)\n"
             . ")";
 
