@@ -23,7 +23,7 @@ $user->email = $data->email;
 if ($user->getUser() && $user->password === md5($data->password)) {
     $token = new Authenticate($user->email);
     http_response_code(200);
-    echo json_encode(array("token" => $token->getToken()));
+    echo json_encode(array("token" => $token->getToken(), "data" => $user->role));
 } else {
     header('HTTP/1.1 401 Unauthorized');
     echo json_encode(array("error" => "Błędne dane"));

@@ -28,15 +28,17 @@ if ($auth->checkToken($token, $message)) {
     $user = new Users($db);
     $user->email = $token->data;
 
-    if ($user->ifExists())
-    {
-        echo json_encode(array("data" =>  $user->getUsers()));
-    }
-    else
-    {
+    if ($user->ifExists()) {
+        if ($user->getRole() === 'admin') {
+            echo json_encode(array("data" =>  $user->getUsers()));
+        } else {
+            http_response_code(404);
+            echo json_encode(array("error" => "Brak wystarczajacych uprawnien. Zaloguj sie ponownie!"));
+        }
+    } else {
         echo json_encode(array("error" => "Uzytkownik nie istnieje. Zaloguj sie ponownie!"));
+        http_response_code(404);
     }
-    
 } else {
     echo json_encode(array("error" => $message));
 }

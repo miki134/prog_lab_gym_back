@@ -31,27 +31,33 @@
         $users->password = $data->password;
         $users->role = 'client';
         
-        $mess = '';
-        if($users->checkCredentials($mess))
+        if(!$users->ifExists())
         {
-            $users->password = md5($users->password);
-            if($users->create()){            
-                
-                $token = new Authenticate($users->email);
-                
-                http_response_code(201);
-                echo json_encode(array("token" => $token->getToken()));
-                
-                // echo json_encode(array("message" => "User was created."));
+            $mess = '';
+            if($users->checkCredentials($mess))
+            {
+                $users->password = md5($users->password);
+                if($users->create()){            
+                    
+                    $token = new Authenticate($users->email);
+                    
+                    http_response_code(201);
+                    echo json_encode(array("token" => $token->getToken(), "data" => $users->role));
+                }
+                else{
+                    echo json_encode(array("error" => "Przepraszamy rejestracja w tej chwili jest nie mozliwa. Prosze spróbowac pozniej"));
+                }
             }
-            else{
-                echo json_encode(array("error" => "Przepraszamy rejestracja w tej chwili jest nie mozliwa. Prosze spróbowac pozniej"));
+            else
+            {
+                http_response_code(400);
+                echo json_encode(array("error" => $mess));
             }
         }
         else
         {
             http_response_code(400);
-            echo json_encode(array("error" => $mess));
+            echo json_encode(array("error" => "Uzytkownik istnieje!"));
         }
     }
     else{

@@ -194,4 +194,19 @@ class Users extends Obj
         $stmt = $this->conn->exec($sql);
         return $stmt;
     }
+
+    public function getRole()
+    {
+        $sql = "SELECT `role` FROM " . $this->table_name . " WHERE `email` LIKE '" . $this->email . "'";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        if ($stmt->rowCount() >= 1) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->role = $row['role'];
+
+            $stmt->closeCursor();
+            return $this->role;
+        }
+        return false;
+    }
 }

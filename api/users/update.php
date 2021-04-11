@@ -42,6 +42,6 @@ if ($user->ifExists()) {
         http_response_code(400);
     }
 } else {
-    http_response_code(401);
+    http_response_code(404);
     echo json_encode(array("error" => "Uzytkownik nie istnieje. Zaloguj sie ponownie!"));
 }

@@ -9,6 +9,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/database.php';
 include_once '../objects/diets.php';
 include_once '../config/authenticate.php';
+include_once '../objects/users.php';
 
 
 $database = new Database();
@@ -40,6 +41,14 @@ if ($auth->checkToken($token, $message)) {
 
         $mess = '';
         if ($tab->checkCredentials($mess)) {
+            $user = new Users($db);
+            $user->email = $token->data;
+
+            if ($user->getRole() !== 'admin') {
+                http_response_code(404);
+                echo json_encode(array("error" => "Brak wystarczajacych uprawnien. Zaloguj sie ponownie!"));
+            }
+
             if ($tab->create()) {
                 http_response_code(201);
                 echo json_encode(array("data" => 'Dodano diete'));
