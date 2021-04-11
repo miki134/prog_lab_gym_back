@@ -95,4 +95,45 @@ class Equipment extends Obj
         $stmt = $this->conn->exec($sql);
         return $stmt;
     }
+
+    public function checkCredentials(&$message)
+    {
+        //name
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{4,30})$/', $this->name)) {
+            $message = "Nazwa sprzetu musi mieć długość od 4 do 30 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        //length
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{2,10})$/', $this->length)) {
+            $message = "Dlugosc sprzetu musi mieć długość od 2 do 10 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        //height
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{2,10})$/', $this->height)) {
+            $message = "Wysokosc sprzetu musi mieć długość od 2 do 10 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        //width
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{2,10})$/', $this->width)) {
+            $message = "Szerokosc sprzetu musi mieć długość od 2 do 10 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        //weight
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{2,10})$/', $this->weight)) {
+            $message = "Waga sprzetu musi mieć długość od 2 do 10 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        //description
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{0,300})$/', $this->description)) {
+            $message = "Opis musi mieć długość od 0 do 300 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        return true;
+    }
 }

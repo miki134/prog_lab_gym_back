@@ -99,7 +99,7 @@ class Diets extends Obj
     {
         //name
         if (!preg_match('/^([a-z|A-Z|0-9|\s]{4,30})$/', $this->name)) {
-            $message = "Nazwa treningu musi mieć długość od 4 do 30 znaków, możesz używać tylko liter!";
+            $message = "Nazwa diety musi mieć długość od 4 do 30 znaków, możesz używać tylko liter, cyfr i spacji!";
             return false;
         }
 
