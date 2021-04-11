@@ -7,14 +7,14 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 
 include_once '../config/database.php';
-include_once '../objects/workouts.php';
+include_once '../objects/diets.php';
 include_once '../config/authenticate.php';
 
 
 $database = new Database();
 $db = $database->getConnection();
 
-$tab = new Workouts($db);
+$tab = new Diets($db);
 $data = json_decode(file_get_contents("php://input"));
 
 $arr = array();
@@ -23,35 +23,34 @@ foreach (getallheaders() as $name => $value) {
 }
 
 $token = $arr['Authorization'];
-
 $auth = new Authenticate('');
 if ($auth->checkToken($token, $message)) {
-
-
     if (
         !empty($data->name) &&
-        !empty($data->lengthOfTime) &&
-        !empty($data->quantityOfExercises) &&
-        !empty($data->difficulty)
+        !empty($data->quantityOfProducts) &&
+        !empty($data->numberOfMealsPerDay) &&
+        !empty($data->meat)
     ) {
 
         $tab->name = $data->name;
-        $tab->lengthOfTime = $data->lengthOfTime;
-        $tab->quantityOfExercises = $data->quantityOfExercises;
-        $tab->difficulty = $data->difficulty;
+        $tab->quantityOfProducts = $data->quantityOfProducts;
+        $tab->numberOfMealsPerDay = $data->numberOfMealsPerDay;
+        $tab->meat = $data->meat;
         $tab->description = $data->description;
 
         $mess = '';
         if ($tab->checkCredentials($mess)) {
             if ($tab->create()) {
                 http_response_code(201);
-                echo json_encode(array("data" => 'Dodano trening'));
+                echo json_encode(array("data" => 'Dodano diete'));
             } else {
-                echo json_encode(array("error" => "Przepraszamy dodawanie treningow jest niedostepne!. Prosze spróbowac pozniej"));
+                echo json_encode(array("error" => "Przepraszamy dodawanie diet jest niedostepne!. Prosze spróbowac pozniej"));
+                http_response_code(400);
             }
         } else {
-            http_response_code(400);
+            // echo '$mess';
             echo json_encode(array("error" => $mess));
+            http_response_code(400);
         }
     } else {
         http_response_code(400);

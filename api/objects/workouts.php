@@ -91,7 +91,7 @@ class Workouts extends Obj
         return $stmt;
     }
 
-    public function checkCredentials(&$message, $password = true)
+    public function checkCredentials(&$message)
     {
         //name
         if (!preg_match('/^([a-z|A-Z|0-9|\s]{4,30})$/', $this->name)) {

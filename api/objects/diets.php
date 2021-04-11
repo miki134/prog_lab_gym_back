@@ -55,7 +55,8 @@ class Diets extends Obj
                 name=:name, 
                 quantityOfProducts=:quantityOfProducts, 
                 numberOfMealsPerDay=:numberOfMealsPerDay, 
-                meat=:meat, description=:description";
+                meat=:meat, 
+                description=:description";
 
         $stmt = $this->conn->prepare($query);
 
@@ -83,8 +84,8 @@ class Diets extends Obj
         $sql = "CREATE TABLE IF NOT EXISTS  " . $this->table_name . " ( \n"
             . "    id int AUTO_INCREMENT, \n"
             . "    name varchar(30) not null, \n"
-            . "    quantityOfProducts varchar(10) not null, \n"
-            . "    numberOfMealsPerDay varchar(10) not null, \n"
+            . "    quantityOfProducts int not null, \n"
+            . "    numberOfMealsPerDay int not null, \n"
             . "    meat bool DEFAULT true, \n"
             . "    description varchar(300) DEFAULT 'Brak', \n"
             . "    PRIMARY Key(id)\n"
@@ -92,5 +93,38 @@ class Diets extends Obj
 
         $stmt = $this->conn->exec($sql);
         return $stmt;
+    }
+
+    public function checkCredentials(&$message)
+    {
+        //name
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{4,30})$/', $this->name)) {
+            $message = "Nazwa treningu musi mieć długość od 4 do 30 znaków, możesz używać tylko liter!";
+            return false;
+        }
+
+        //quantityOfProducts
+        if (!preg_match('/^([0-9]{1,2})$/', $this->quantityOfProducts)) {
+            $message = "Ilosc skladnikow musi byc liczba calkowita z przedzialu od 1 do 100!";
+            return false;
+        }
+        //numberOfMealsPerDay
+        if (!preg_match('/^([0-9]{1,2})$/', $this->numberOfMealsPerDay)) {
+            $message = "Pole 'Ilosc posilkow dziennie' musi byc liczba calkowita z przedzialu od 1 do 100!";
+            return false;
+        }
+        //meat
+        if (!preg_match('/^([0|1]{1})$/', $this->meat)) {
+            $message = "Zawartosc miesa? Tak czy Nie?";
+            return false;
+        }
+
+        //description
+        if (!preg_match('/^([a-z|A-Z|0-9|\s]{0,300})$/', $this->description)) {
+            $message = "Opis musi mieć długość od 0 do 300 znaków, możesz używać tylko liter, cyfr i spacji!";
+            return false;
+        }
+
+        return true;
     }
 }
