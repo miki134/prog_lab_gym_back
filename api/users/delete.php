@@ -13,8 +13,6 @@ $database = new Database();
 $db = $database->getConnection();
 
 $user = new Users($db);
-$user->email = 'a@aa.pl';
-
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -32,14 +30,14 @@ if ($auth->checkToken($token, $message)) {
     $user->email = $data->email;
     $user->password = $data->password;
     $user->role = $data->role;
+    // print_r($user);
 
     // $admin = new Users($db);
     // $admin->email = $token->data;
-
-    if ($admin->getRole() !== 'admin') {
-        http_response_code(404);
-        echo json_encode(array("error" => "Brak wystarczajacych uprawnien. Zaloguj sie ponownie!"));
-    }
+    // if ($admin->getRole() !== 'admin') {
+    //     http_response_code(404);
+    //     echo json_encode(array("error" => "Brak wystarczajacych uprawnien. Zaloguj sie ponownie!"));
+    // }
 
     if ($user->ifExists()) {
         if ($user->delete()) {

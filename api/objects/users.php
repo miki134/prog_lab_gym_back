@@ -213,7 +213,7 @@ class Users extends Obj
     public function delete()
     {
         $sql = "DELETE FROM " . $this->table_name . " WHERE `email` LIKE '" . $this->email . "'";
-
+        // echo $sql;
         $stmt = $this->conn->prepare($sql);
         if($stmt->execute())
             return true;
