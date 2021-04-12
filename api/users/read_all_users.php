@@ -30,7 +30,8 @@ if ($auth->checkToken($token, $message)) {
 
     if ($user->ifExists()) {
         if ($user->getRole() === 'admin') {
-            echo json_encode(array("data" =>  $user->getUsers()));
+            $tok = new Authenticate($user->email);
+            echo json_encode(array("token" => $tok->getToken(), "data" =>  $user->getUsers()));
         } else {
             http_response_code(404);
             echo json_encode(array("error" => "Brak wystarczajacych uprawnien. Zaloguj sie ponownie!"));

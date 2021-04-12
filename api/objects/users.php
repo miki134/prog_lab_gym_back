@@ -209,4 +209,15 @@ class Users extends Obj
         }
         return false;
     }
+
+    public function delete()
+    {
+        $sql = "DELETE FROM " . $this->table_name . " WHERE `email` LIKE '" . $this->email . "'";
+
+        $stmt = $this->conn->prepare($sql);
+        if($stmt->execute())
+            return true;
+        return false;
+    }
+    
 }
